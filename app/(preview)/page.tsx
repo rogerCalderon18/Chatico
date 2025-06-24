@@ -5,11 +5,11 @@ import { useEffect, useMemo, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import ReactMarkdown, { Options } from "react-markdown";
 import React from "react";
-import {Input} from "@/components/ui/input";
+import { Input } from "@/components/ui/input";
 import { LoadingIcon } from "@/components/icons";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
-import{ Message } from "ai";
+import { Message } from "ai";
 import { ScrollShadow } from "@heroui/react";
 import Image from "next/image";
 
@@ -18,6 +18,20 @@ export default function Chat() {
   const [isPlayingBomba, setIsPlayingBomba] = useState(false);
   const [imageLoaded, setImageLoaded] = useState(false);
   const [imageError, setImageError] = useState(false);
+  const [currentTextIndex, setCurrentTextIndex] = useState(0);
+
+  // Array de dichos costarricenses
+  const costaRicanSayings = [
+    "Conversá con un experto en historia, cultura y costumbres ticas",
+    "¡Pura vida, mae! Aprendé sobre Costa Rica",
+    "De pelos, aquí tenés toda la info tica",
+    "¡Qué tuanis! Descubrí las tradiciones ticas",
+    "¡Tranquilo, hermano! Explorá nuestra cultura",
+    "¡Qué dicha! Conocé más de Tiquicia",
+    "¡Más fresco que una pipa! Historia costarricense",
+    "¡Buena nota! Cultura y tradiciones ticas"
+  ];
+
   const { messages, input, handleInputChange, handleSubmit, isLoading } =
     useChat({
       maxSteps: 4,
@@ -53,8 +67,24 @@ export default function Chat() {
       setIsPlayingBomba(false);
       audio.pause();
     }, 30000); // 30 segundos
-  };
-  const [isExpanded, setIsExpanded] = useState<boolean>(false);
+  }; const [isExpanded, setIsExpanded] = useState<boolean>(false);
+
+  // Efecto para cambiar el texto cada 3 segundos después de 5 segundos iniciales
+  useEffect(() => {
+    // Esperar 5 segundos antes de empezar a rotar
+    const initialDelay = setTimeout(() => {
+      const interval = setInterval(() => {
+        setCurrentTextIndex((prevIndex) =>
+          (prevIndex + 1) % costaRicanSayings.length
+        );
+      }, 10000); // Cambiar cada 3 segundos
+
+      return () => clearInterval(interval);
+    }, 10000); // Esperar 5 segundos inicialmente
+
+    return () => clearTimeout(initialDelay);
+  }, [costaRicanSayings.length]);
+
   useEffect(() => {
     if (messages.length > 0) setIsExpanded(true);
   }, [messages]);
@@ -66,7 +96,7 @@ export default function Chat() {
         console.log("Clearing tool call after stream completion");
         setToolCall(undefined);
       }, 1000); // Aumentar delay
-      
+
       return () => clearTimeout(timer);
     }
   }, [isLoading, toolCall]);
@@ -92,72 +122,78 @@ export default function Chat() {
       />
       {/* Fallback con color de fondo */}
       <div className="absolute inset-0 bg-slate-800" />
-    <div className="flex flex-col items-center w-full max-w-[1100px] z-50">
+      <div className="flex flex-col items-center w-full max-w-[1100px] z-50">
 
-      {/* Encabezado */}
-      <motion.div
-        initial={{ opacity: 0, y: -30 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ type: "spring", stiffness: 300, damping: 30 }}
-        className="mb-12 text-center"
-      >
-        <h1 className="text-4xl md:text-5xl font-bold text-blue-800 drop-shadow-2xl">
-          Bienvenid@ a ChaTico
-        </h1>
-        <p className="text-lg md:text-xl text-red-400 mt-2 opacity-90">
-          Conversá con un experto en historia, cultura y costumbres ticas
-        </p>
-      </motion.div>
-      <motion.div
-        animate={{
-          minHeight: isExpanded ? 600 : 0,
-          padding: isExpanded ? 20 : 0,
-        }}
-        transition={{
-          type: "spring",
-          bounce: 0.3,
-          duration: 0.6
-        }}
-        className={cn(
-          "rounded-2xl w-full flex flex-col backdrop-blur-sm",
-          isExpanded
-            ? "bg-white/80 dark:bg-neutral-900/80 shadow-2xl border border-white/20"
-            : "bg-transparent",
-        )}
-      >        
-      <div className="flex flex-col w-full justify-between gap-6 h-full max-h-[600px]">          
-        {/* Área de mensajes del chat */}
-          <ScrollShadow 
-            hideScrollBar 
-            className="flex-1 mb-4 max-h-[500px]"
+        {/* Encabezado */}
+        <motion.div
+          initial={{ opacity: 0, y: -30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ type: "spring", stiffness: 300, damping: 30 }}
+          className="mb-12 text-center"
+        >        <h1 className="text-4xl md:text-5xl font-bold text-blue-800 drop-shadow-2xl">
+            Bienvenid@ a ChaTico
+          </h1>
+          <motion.p
+            key={currentTextIndex}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            transition={{ duration: 0.5 }}
+            className="text-lg md:text-xl text-red-600 mt-2 opacity-90"
           >
-            <motion.div
-              transition={{
-                type: "spring",
-              }}
-              className="flex flex-col gap-4 px-2"
+            {costaRicanSayings[currentTextIndex]}
+          </motion.p>
+        </motion.div>
+        <motion.div
+          animate={{
+            minHeight: isExpanded ? 600 : 0,
+            padding: isExpanded ? 20 : 0,
+          }}
+          transition={{
+            type: "spring",
+            bounce: 0.3,
+            duration: 0.6
+          }}
+          className={cn(
+            "rounded-2xl w-full flex flex-col backdrop-blur-sm",
+            isExpanded
+              ? "bg-white/80 dark:bg-neutral-900/80 shadow-2xl border border-white/20"
+              : "bg-transparent",
+          )}
+        >
+          <div className="flex flex-col w-full justify-between gap-6 h-full max-h-[600px]">
+            <ScrollShadow
+              hideScrollBar
+              className="flex-1 mb-4 max-h-[500px]"
             >
-              <AnimatePresence mode="popLayout">
-                {messages.map((message, index) => (
-                  <motion.div
-                    key={message.id}
-                    initial={{ opacity: 0, y: 20, scale: 0.95 }}
-                    animate={{ opacity: 1, y: 0, scale: 1 }}
-                    exit={{ opacity: 0, y: -20, scale: 0.95 }}
-                    transition={{
-                      delay: index * 0.1,
-                      type: "spring",
-                      stiffness: 500,
-                      damping: 30
-                    }}
-                  >
-                    {message.role === "user" ? (
-                      <UserMessage message={message} />
-                    ) : (
-                      <AssistantMessage message={message} />
-                    )}
-                  </motion.div>
-                ))}                  {/* Mostrar loading solo si está esperando respuesta */}
+              <motion.div
+                transition={{
+                  type: "spring",
+                }}
+                className="flex flex-col gap-4 px-2"
+              >
+                <AnimatePresence mode="popLayout">
+                  {messages.map((message, index) => (
+                    <motion.div
+                      key={message.id}
+                      initial={{ opacity: 0, y: 20, scale: 0.95 }}
+                      animate={{ opacity: 1, y: 0, scale: 1 }}
+                      exit={{ opacity: 0, y: -20, scale: 0.95 }}
+                      transition={{
+                        delay: index * 0.1,
+                        type: "spring",
+                        stiffness: 500,
+                        damping: 30
+                      }}
+                    >
+                      {message.role === "user" ? (
+                        <UserMessage message={message} />
+                      ) : (
+                        <AssistantMessage message={message} />
+                      )}
+                    </motion.div>
+                  ))}                  
+                  {/* Mostrar loading solo si está esperando respuesta */}
                   {isShowingLoading && (
                     <motion.div
                       initial={{ opacity: 0, y: 20 }}
@@ -167,44 +203,44 @@ export default function Chat() {
                       className="px-2"
                     >
                       <Loading tool={toolCall} />
-                    </motion.div>                  )}
-              </AnimatePresence>
-            </motion.div>
-          </ScrollShadow>
+                    </motion.div>)}
+                </AnimatePresence>
+              </motion.div>
+            </ScrollShadow>
 
-          {/* Formulario de input mejorado */}
-          <motion.form
-            onSubmit={handleSubmit}
-            className="flex space-x-3 bg-white/50 dark:bg-neutral-800/50 p-3 rounded-xl backdrop-blur-sm border border-white/20"
-            whileFocus={{ scale: 1.02 }}
-            transition={{ type: "spring", stiffness: 300 }}
-          >
-            <Input
-              className="bg-white/80 dark:bg-neutral-700/80 text-base w-full text-gray-800 dark:text-neutral-300 border-none shadow-lg rounded-xl px-4 py-3 placeholder:text-neutral-400 focus:ring-2 focus:ring-blue-700 transition-all duration-200"
-              minLength={3}
-              required
-              value={input}
-              placeholder="¡Pura vida! ¿En qué puedo ayudarte?..."
-              onChange={handleInputChange}
-            />
-            <motion.button
-              type="submit"
-              disabled={isLoading || !input.trim()}
-              className="bg-blue-800 hover:to-blue-700 disabled:opacity-50 text-white px-6 py-3 rounded-xl shadow-lg transition-all duration-200 flex items-center gap-2 font-medium"
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
+            {/* Formulario de input mejorado */}
+            <motion.form
+              onSubmit={handleSubmit}
+              className="flex space-x-3 bg-white/50 dark:bg-neutral-800/50 p-3 rounded-xl backdrop-blur-sm border border-white/20"
+              whileFocus={{ scale: 1.02 }}
+              transition={{ type: "spring", stiffness: 300 }}
             >
-              <img
-                src="/enviar.png"
-                alt="Enviar"
-                className="w-5 h-5"
+              <Input
+                className="bg-white/80 dark:bg-neutral-700/80 text-base w-full text-gray-800 dark:text-neutral-300 border-none shadow-lg rounded-xl px-4 py-3 placeholder:text-neutral-400 focus:ring-2 focus:ring-blue-700 transition-all duration-200"
+                minLength={3}
+                required
+                value={input}
+                placeholder="¡Pura vida! ¿En qué puedo ayudarte?..."
+                onChange={handleInputChange}
               />
-            </motion.button>
-          </motion.form>
-        </div>
-      </motion.div>
+              <motion.button
+                type="submit"
+                disabled={isLoading || !input.trim()}
+                className="bg-blue-800 hover:to-blue-700 disabled:opacity-50 text-white px-6 py-3 rounded-xl shadow-lg transition-all duration-200 flex items-center gap-2 font-medium"
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                <img
+                  src="/enviar.png"
+                  alt="Enviar"
+                  className="w-5 h-5"
+                />
+              </motion.button>
+            </motion.form>
+          </div>
+        </motion.div>
+      </div>
     </div>
-  </div>
   );
 }
 
