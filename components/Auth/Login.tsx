@@ -7,16 +7,24 @@ import React from "react";
 const Login: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
-
+  
   const handleGitHubLogin = async (): Promise<void> => {
     setLoading(true);
     setErrorMessage(null);
 
     try {
-      await signIn("github", { 
-        callbackUrl: `${window.location.origin}/admin`, // Redirige al dashboard después del login
-        redirect: false 
+      const result = await signIn("github", { 
+        redirect: false,
+        callbackUrl: "/admin"
       });
+      
+      if (result?.error) {
+        setErrorMessage("Error al iniciar sesión con GitHub");
+        console.error("SignIn error:", result.error);
+      } else if (result?.ok) {
+        // Login exitoso, redirigir manualmente
+        window.location.replace("/admin");
+      }
     } catch (error) {
       console.error("GitHub login error:", error);
       setErrorMessage("Error al iniciar sesión con GitHub");
