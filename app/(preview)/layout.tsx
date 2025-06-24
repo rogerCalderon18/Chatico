@@ -1,22 +1,15 @@
 import type { Metadata } from "next";
-
-import "./globals.css";
+import "@/globals.css";
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://ai-sdk-preview-rag.vercel.app"),
-  title: "Retrieval Augmented Generation Preview",
-  description:
-    "Augment language model generations with vector based retrieval using the Vercel AI SDK",
+  title: "Chatico - Preview",
+  description: "Tu segundo cerebro con IA - Vista previa",
 };
 
-export default function RootLayout({
+export default function PreviewLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  return (
-    <html lang="en">
-      <body>{children}</body>
-    </html>
-  );
+  return <>{children}</>;
 }

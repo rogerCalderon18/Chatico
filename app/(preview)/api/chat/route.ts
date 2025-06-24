@@ -18,6 +18,7 @@ export async function POST(req: Request) {
       Use tools on every request.
       Be sure to getInformation from your knowledge base before answering any questions.
       If the user presents infromation about themselves, use the addResource tool to store it.
+      If the user asks for a 'bomba', 'bomba guanacasteca', or similar requests, use the reciteBomba tool.
       If a response requires multiple tools, call one tool after another without responding to the user.
       If a response requires information from an additional tool to generate a response, call the appropriate tools in order before responding to the user.
       if no relevant information is found in the tool calls, respond, "Sorry, I don't know."
@@ -26,6 +27,7 @@ export async function POST(req: Request) {
       Keep responses short and concise. Answer in a single sentence where possible.
       If you are unsure, use the getInformation tool and you can use common sense to reason based on the information you do have.
       Use your abilities as a reasoning machine to answer questions based on the information you do have.
+      When reciting a bomba, always format it poetically and mention it's a traditional Costa Rican bomba.
 `,
       tools: {
         addResource: tool({
@@ -89,6 +91,21 @@ export async function POST(req: Request) {
             });
             console.log("Resultado understandQuery:", object.questions);
             return object.questions;
+          },
+        }),
+        reciteBomba: tool({
+          description: `recite a bomba guanacasteca when the user asks for one. Use this when user asks for 'bomba', 'bomba guanacasteca', 'dime una bomba', etc.`,
+          parameters: z.object({
+            requestType: z.string().describe("type of bomba request"),
+          }),
+          execute: async ({ requestType }) => {
+            console.log("🎵 BOMBA REQUESTED - Playing music!");
+            // Aquí podrías llamar a una API para reproducir música
+            return {
+              type: "bomba",
+              shouldPlayMusic: true,
+              bomba: "Esta bomba viene de Guanacaste, tierra de sol y tradición, donde el sabanero canta, con mucha inspiración!",
+            };
           },
         }),
       },

@@ -1,8 +1,12 @@
 const { fontFamily } = require("tailwindcss/defaultTheme")
+const { heroui } = require("@heroui/react");
 
 /** @type {import('tailwindcss').Config} */
 module.exports = {
-  content: ["app/**/*.{ts,tsx}", "components/**/*.{ts,tsx}"],
+  content: [
+    "app/**/*.{ts,tsx}", "components/**/*.{ts,tsx}",
+    "./node_modules/@heroui/theme/dist/**/*.{js,ts,jsx,tsx}",
+  ],
   theme: {
     container: {
       center: true,
@@ -71,5 +75,6 @@ module.exports = {
       },
     },
   },
-  plugins: [require("tailwindcss-animate")],
+  darkMode: "class",
+  plugins: [heroui(), require("tailwindcss-animate")],
 }

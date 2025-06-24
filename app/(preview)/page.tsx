@@ -14,16 +14,38 @@ import { toast } from "sonner";
 
 export default function Chat() {
   const [toolCall, setToolCall] = useState<string>();
+  const [isPlayingBomba, setIsPlayingBomba] = useState(false);
+  
   const { messages, input, handleInputChange, handleSubmit, isLoading } =
     useChat({
       maxSteps: 4,
       onToolCall({ toolCall }) {
+        console.log("Tool call detected:", toolCall);
         setToolCall(toolCall.toolName);
+        
+        // Detectar si es una bomba
+        if (toolCall.toolName === 'reciteBomba') {
+          console.log("🎵 Bomba detected! Playing music...");
+          setIsPlayingBomba(true);
+          playBombaMusic();
+        }
       },
       onError: (error) => {
         toast.error("You've been rate limited, please try again later!");
       },
     });
+
+  const playBombaMusic = () => {
+    // Reproducir música tradicional costarricense
+    const audio = new Audio('/music/bomba.mp3'); // Agrega tu archivo de música
+    audio.play().catch(console.error);
+    
+    // Opcional: parar la música después de un tiempo
+    setTimeout(() => {
+      setIsPlayingBomba(false);
+      audio.pause();
+    }, 30000); // 30 segundos
+  };
 
   const [isExpanded, setIsExpanded] = useState<boolean>(false);
 
@@ -144,9 +166,23 @@ const UserMessage = ({ message }: { message: Message }) => {
 const AssistantMessage = ({ message }: { message: Message }) => {
   if (!message.content) return null;
 
+  // Detectar si el mensaje contiene una bomba
+  const isBomba = message.toolInvocations?.some(tool => tool.toolName === 'reciteBomba');
+
   return (
     <div className="px-2 flex justify-start">
-      <div className="bg-white dark:bg-neutral-700 px-3 py-2 rounded-lg max-w-[80%] text-sm">
+      <div className={`px-3 py-2 rounded-lg max-w-[80%] text-sm ${
+        isBomba 
+          ? 'bg-gradient-to-r from-yellow-200 to-orange-200 dark:from-yellow-800 dark:to-orange-800 border-2 border-yellow-400' 
+          : 'bg-white dark:bg-neutral-700'
+      }`}>
+        {isBomba && (
+          <div className="flex items-center gap-2 mb-2 text-orange-600 dark:text-orange-400">
+            <span className="text-lg">🎵</span>
+            <span className="font-semibold text-xs">Bomba Guanacasteca</span>
+            <span className="text-lg animate-pulse">🎶</span>
+          </div>
+        )}
         <MemoizedReactMarkdown
           className="text-neutral-800 dark:text-neutral-200"
         >
@@ -163,7 +199,9 @@ const Loading = ({ tool }: { tool?: string }) => {
       ? "Getting information"
       : tool === "addResource"
         ? "Adding information"
-        : "Thinking";
+        : tool === "reciteBomba"
+          ? "🎵 Preparando bomba guanacasteca..."
+          : "Thinking";
 
   return (
     <div className="flex justify-start">
