@@ -121,7 +121,8 @@ export default function Chat() {
             : "bg-transparent",
         )}
       >        
-      <div className="flex flex-col w-full justify-between gap-6 h-full max-h-[600px]">          {/* Área de mensajes del chat */}
+      <div className="flex flex-col w-full justify-between gap-6 h-full max-h-[600px]">          
+        {/* Área de mensajes del chat */}
           <ScrollShadow 
             hideScrollBar 
             className="flex-1 mb-4 max-h-[500px]"
