@@ -83,7 +83,7 @@ export default function Chat() {
     <div className="relative flex justify-center items-center h-screen w-full px-4 md:px-0 py-4 overflow-hidden px-3">
       {/* Imagen de fondo usando Next.js Image */}
       <Image
-        src="/ChaticoFondo2.png"
+        src="/fondo.png"
         alt="Fondo Costa Rica"
         fill
         priority
