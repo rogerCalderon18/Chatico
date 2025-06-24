@@ -27,7 +27,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="es">
-      <body className={`${geist.variable} ${geistMono.variable} antialiased`}>
+      <body className={`${geist.variable} ${geistMono.variable} antialiased light text-foreground bg-background`}>
         <AuthProvider>
           <HeroUIProvider>
             {children}

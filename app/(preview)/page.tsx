@@ -1,21 +1,23 @@
 "use client";
 
-import { Input } from "@/components/ui/input";
-import { Message } from "ai";
 import { useChat } from "ai/react";
 import { useEffect, useMemo, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import ReactMarkdown, { Options } from "react-markdown";
 import React from "react";
-import ProjectOverview from "@/components/project-overview";
+import {Input} from "@/components/ui/input";
 import { LoadingIcon } from "@/components/icons";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
+import{ Message } from "ai";
 import { ScrollShadow } from "@heroui/react";
+import Image from "next/image";
 
 export default function Chat() {
   const [toolCall, setToolCall] = useState<string>();
   const [isPlayingBomba, setIsPlayingBomba] = useState(false);
+  const [imageLoaded, setImageLoaded] = useState(false);
+  const [imageError, setImageError] = useState(false);
   const { messages, input, handleInputChange, handleSubmit, isLoading } =
     useChat({
       maxSteps: 4,
@@ -77,18 +79,20 @@ export default function Chat() {
     }
     return false;
   }, [isLoading, messages, toolCall]);
-
-  return (<div
-    className="flex justify-center items-center h-screen w-full px-4 md:px-0 py-4 overflow-hidden"
-    style={{
-      backgroundImage: 'url(/ChaticoFondo2.png)',
-      backgroundSize: 'cover',
-      backgroundPosition: 'center',
-      backgroundRepeat: 'no-repeat',
-      backgroundColor: '#1e293b' // Fallback color
-    }}
-  >
-    <div className="flex flex-col items-center w-full max-w-[1100px]">
+  return (
+    <div className="relative flex justify-center items-center h-screen w-full px-4 md:px-0 py-4 overflow-hidden px-3">
+      {/* Imagen de fondo usando Next.js Image */}
+      <Image
+        src="/ChaticoFondo2.png"
+        alt="Fondo Costa Rica"
+        fill
+        priority
+        className="object-cover z-20"
+        sizes="100vw"
+      />
+      {/* Fallback con color de fondo */}
+      <div className="absolute inset-0 bg-slate-800" />
+    <div className="flex flex-col items-center w-full max-w-[1100px] z-50">
 
       {/* Encabezado */}
       <motion.div
