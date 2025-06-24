@@ -1,21 +1,32 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { signIn } from "next-auth/react";
+import { useSearchParams } from "next/navigation";
 import React from "react";
 
 const Login: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
-
+  const searchParams = useSearchParams();
+  
+  // Obtener el callbackUrl de los parámetros de búsqueda
+  const callbackUrl = searchParams.get('callbackUrl') || '/admin';
   const handleGitHubLogin = async (): Promise<void> => {
     setLoading(true);
     setErrorMessage(null);
 
     try {
-      await signIn("github", { 
-        callbackUrl: "/admin" 
+      console.log("Attempting login with callbackUrl:", callbackUrl);
+      const result = await signIn("github", { 
+        callbackUrl: callbackUrl,
+        redirect: true
       });
+      
+      if (result?.error) {
+        setErrorMessage("Error al iniciar sesión con GitHub");
+        console.error("SignIn error:", result.error);
+      }
     } catch (error) {
       console.error("GitHub login error:", error);
       setErrorMessage("Error al iniciar sesión con GitHub");

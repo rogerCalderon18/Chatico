@@ -292,8 +292,7 @@ export default function AdminPage() {
                 </div>
               </div>
             )}
-          </div>          
-          {/* Stats Sidebar */}
+          </div>          {/* Stats Sidebar */}
           <div className="space-y-6">
             {/* Estadísticas Generales */}
             <div className="bg-white rounded-xl shadow-lg p-6">
