@@ -14,7 +14,7 @@ const Login: React.FC = () => {
 
     try {
       await signIn("github", { 
-        callbackUrl: "/" 
+        callbackUrl: "/admin" 
       });
     } catch (error) {
       console.error("GitHub login error:", error);
