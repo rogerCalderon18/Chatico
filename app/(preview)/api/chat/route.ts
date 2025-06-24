@@ -87,7 +87,7 @@ export async function POST(req: Request) {
                   .max(3)
                   .describe("similar questions to the user's query. be concise."),
               }),
-              prompt: `Analyze this query: "${query}". Provide the following:\n                    3 similar questions that could help answer the user's query`,
+              prompt: `Analyze this query: "${query}". Provide the following:\n3 similar questions that could help answer the user's query`,
             });
             console.log("Resultado understandQuery:", object.questions);
             return object.questions;
@@ -100,7 +100,6 @@ export async function POST(req: Request) {
           }),
           execute: async ({ requestType }) => {
             console.log("🎵 BOMBA REQUESTED - Playing music!");
-            // Aquí podrías llamar a una API para reproducir música
             return {
               type: "bomba",
               shouldPlayMusic: true,
