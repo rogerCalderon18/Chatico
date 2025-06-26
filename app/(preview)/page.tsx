@@ -22,14 +22,42 @@ export default function Chat() {
 
   // Array de dichos costarricenses
   const costaRicanSayings = [
-    "Conversá con un experto en historia, cultura y costumbres ticas",
-    "¡Pura vida, mae! Aprendé sobre Costa Rica",
-    "De pelos, aquí tenés toda la info tica",
-    "¡Qué tuanis! Descubrí las tradiciones ticas",
-    "¡Tranquilo, hermano! Explorá nuestra cultura",
-    "¡Qué dicha! Conocé más de Tiquicia",
-    "¡Más fresco que una pipa! Historia costarricense",
-    "¡Buena nota! Cultura y tradiciones ticas"
+    "¡Pura vida, bienvenido al chat tico!",
+    "¡Con gusto, aquí le ayudamos a lo tico!",
+    "¡Tuanis, está en buenas manos!",
+    "¡Qué chiva tenerlo por aquí!",
+    "¡A cachete le va a quedar este paseo!",
+    "¡Rajado lo que va a aprender hoy!",
+    "¡Aquí sí se respira pura vida!",
+    "¡Qué dicha que vino, mae!",
+    "¡Bienvenido, está en tierra de pura vida!",
+    "¡Le damos la bienvenida a lo tico, con cariño!",
+    "¡Tico a la vista, información a la pista!",
+    "¡Vamos a pulsearla juntos!",
+    "¡Todo en orden, como buen tico diría!",
+    "¡Listos pa' contarle lo que hace a Costa Rica especial!",
+    "¡Con gusto le muestro lo más chuzo de mi país!",
+    "¡Súper tuanis que esté por acá!",
+    "¡Diay, qué dicha tenerte por aquí!",
+    "¡Upa! Ya llegó la persona que faltaba.",
+    "¡Diay, no hay pierde! Aquí se aprende con sabor tico.",
+    "¡Qué nivel, compa! Bienvenido a la tierra del pura vida.",
+    "¡Aquí entre nos, este chat está rajado de bueno!",
+    "¡Mae, qué dicha tenerte en este rinconcito costarricense!",
+    "¡Vieras qué tuanis está esto, y apenas va empezando!",
+    "¡Mae, siéntase como en casa... pero en versión tica!",
+    "¡Diay! Aquí todo se hace con cariño y café.",
+    "¡Este no es cualquier chat, es el más tico de todos!",
+    "¡Venga, venga! Que aquí hay historia, sabor y pura vida.",
+    "¡Con cariño tico, pa' que aprenda y disfrute!",
+    "¡Tico que se respeta, saluda con pura vida!",
+    "¡Esto está tan tuanis que parece cuento de mi abuela!",
+    "¡Dele viaje, mae, que aquí lo bueno apenas empieza!",
+    "¡Diay, compa, no se diga más! Aquí estamos pa' ayudarle.",
+    "¡A cachete, esta va a ser una conversación tuanis!",
+    "¡Tome asiento virtual y disfrute, esto es Costa Rica en palabras!",
+    "¡Bienvenido a donde las palabras tienen sabor a tamal!",
+    "¡Aquí sí que hay con qué! Cultura tica en su máxima expresión."
   ];
 
   const { messages, input, handleInputChange, handleSubmit, isLoading } =
@@ -192,7 +220,7 @@ export default function Chat() {
                         <AssistantMessage message={message} />
                       )}
                     </motion.div>
-                  ))}                  
+                  ))}
                   {/* Mostrar loading solo si está esperando respuesta */}
                   {isShowingLoading && (
                     <motion.div
