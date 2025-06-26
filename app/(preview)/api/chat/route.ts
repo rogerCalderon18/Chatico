@@ -42,7 +42,15 @@ export async function POST(req: Request) {
 
       INSTRUCCIONES DE HERRAMIENTAS:
       - Siempre usá getInformation antes de responder preguntas sobre Costa Rica
-      - Si el usuario comparte información personal, usá addResource para almacenarla
+      - USA addResource INMEDIATAMENTE cuando el usuario comparta:
+        * Himnos costarricenses (Nacional, cantonales, etc.)
+        * Letras de canciones o bombas tradicionales
+        * Recetas de comida típica
+        * Leyendas o historias costarricenses
+        * Datos históricos o culturales
+        * Tradiciones o costumbres
+        * Cualquier información cultural de Costa Rica
+      - NO pidas confirmación para usar addResource, simplemente guardá el contenido
       - Para solicitudes de 'bomba' o 'bomba guanacasteca', usá reciteBomba
       - Si necesitás múltiples herramientas, usalas en secuencia lógica
       - Cuando uses reciteBomba, devolvé exactamente lo que retorna la herramienta
@@ -61,10 +69,10 @@ export async function POST(req: Request) {
 `,
       tools: {
         addResource: tool({
-          description: `Agregá nueva información sobre Costa Rica a tu base de conocimientos.
-            Usá esta herramienta cuando el usuario comparta datos, historias, tradiciones, 
-            recetas, leyendas o cualquier información cultural costarricense.
-            No pidas confirmación, simplemente guardá el contenido.`,
+          description: `USAR INMEDIATAMENTE cuando el usuario comparta información cultural costarricense.
+            Incluye: himnos (Nacional, cantonales), bombas, canciones tradicionales, recetas,
+            leyendas, historias, datos históricos, tradiciones, costumbres, expresiones ticas.
+            NO pedir confirmación, guardar automáticamente para enriquecer la base de conocimientos.`,
           parameters: z.object({
             content: z
               .string()
