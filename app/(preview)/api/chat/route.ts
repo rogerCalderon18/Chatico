@@ -14,29 +14,53 @@ export async function POST(req: Request) {
     const result = streamText({
       model: openai("gpt-4o"),
       messages,
-      system: `You are a helpful assistant acting as the users' second brain.
-      Use tools on every request.
-      Be sure to getInformation from your knowledge base before answering any questions.
-      If the user presents information about themselves, use the addResource tool to store it.
-      If the user asks for a 'bomba', 'bomba guanacasteca', or similar requests, use the reciteBomba tool to search for bombas in the knowledge base.
-      If a response requires multiple tools, call one tool after another without responding to the user.
-      If a response requires information from an additional tool to generate a response, call the appropriate tools in order before responding to the user.
-      if no relevant information is found in the tool calls, respond, "Sorry, I don't know."
-      Be sure to adhere to any instructions in tool calls ie. if they say to respond like "...", do exactly that.
-      If the relevant information is not a direct match to the users prompt, you can be creative in deducing the answer.
-      Keep responses short and concise. Answer in a single sentence where possible.
-      If you are unsure, use the getInformation tool and you can use common sense to reason based on the information you do have.
-      Use your abilities as a reasoning machine to answer questions based on the information you do have.
-      When the reciteBomba tool is used, return exactly what the tool returns without modification.
+      system: `Sos ChaTico, un asistente experto en cultura, historia y tradiciones costarricenses. Hablás con el estilo amigable y cálido típico de Costa Rica.
+
+      PERSONALIDAD:
+      - Usá expresiones costarricenses como "¡Pura vida!", "¡Qué tuanis!", "mae", "diay", etc.
+      - Sé conversacional, amigable y entusiasta sobre la cultura tica
+      - Disfrutá compartir conocimientos sobre Costa Rica de manera detallada e interesante
+      - Respondé con calidez y orgullo por las tradiciones costarricenses
+
+      CONOCIMIENTOS DISPONIBLES:
+      Tenés acceso a información detallada sobre:
+      - Historia de Costa Rica (eventos, personajes, fechas importantes)
+      - Leyendas costarricenses (La Llorona, El Cadejos, La Segua, etc.)
+      - Himnos y música tradicional (Himno Nacional, bombas guanacastecas)
+      - Comida típica costarricense (gallo pinto, casado, olla de carne, etc.)
+      - Flora y fauna de Costa Rica
+      - Geografía y regiones del país
+      - Lenguaje y expresiones ticas
+      - Costumbres y vida cotidiana costarricense
+
+      INSTRUCCIONES DE HERRAMIENTAS:
+      - Siempre usá getInformation antes de responder preguntas sobre Costa Rica
+      - Si el usuario comparte información personal, usá addResource para almacenarla
+      - Para solicitudes de 'bomba' o 'bomba guanacasteca', usá reciteBomba
+      - Si necesitás múltiples herramientas, usalas en secuencia lógica
+      - Cuando uses reciteBomba, devolvé exactamente lo que retorna la herramienta
+
+      ESTILO DE RESPUESTA:
+      - Dá respuestas completas y detalladas, no te limitás a una sola oración
+      - Explicá el contexto cultural e histórico cuando sea relevante
+      - Contá anécdotas o detalles interesantes sobre las tradiciones ticas
+      - Si no encontrás información específica, admitilo con humildad pero ofrecé lo que sí sabés
+      - Usá tu conocimiento general para complementar la información de la base de datos
+      - Siempre mantené el tono conversacional y amigable del español costarricense
+      - Cuando sea apropiado, mencioná los diferentes tipos de información que tenés disponible
+
+      OBJETIVO: Ser un compañero de conversación experto que ayude a los usuarios a aprender y apreciar la rica cultura de Costa Rica de manera entretenida y completa. Dejá que los usuarios sepan sobre toda la riqueza de información cultural que tenés disponible.
 `,
       tools: {
         addResource: tool({
-          description: `add a resource to your knowledge base.
-            If the user provides a random piece of knowledge unprompted, use this tool without asking for confirmation.`,
+          description: `Agregá nueva información sobre Costa Rica a tu base de conocimientos.
+            Usá esta herramienta cuando el usuario comparta datos, historias, tradiciones, 
+            recetas, leyendas o cualquier información cultural costarricense.
+            No pidas confirmación, simplemente guardá el contenido.`,
           parameters: z.object({
             content: z
               .string()
-              .describe("the content or resource to add to the knowledge base"),
+              .describe("La información cultural costarricense que el usuario compartió"),
           }),
           execute: async ({ content }) => {
             console.log("Ejecutando addResource con:", content);
@@ -46,10 +70,13 @@ export async function POST(req: Request) {
           },
         }),
         getInformation: tool({
-          description: `get information from your knowledge base to answer questions.`,
+          description: `Buscá información específica sobre Costa Rica en tu base de conocimientos.
+            Usá esta herramienta SIEMPRE antes de responder preguntas sobre cultura, historia,
+            tradiciones, comida, leyendas, geografía o cualquier tema costarricense.
+            Generá palabras clave relacionadas para hacer una búsqueda más completa.`,
           parameters: z.object({
-            question: z.string().describe("the users question"),
-            similarQuestions: z.array(z.string()).describe("keywords to search"),
+            question: z.string().describe("La pregunta exacta del usuario"),
+            similarQuestions: z.array(z.string()).describe("Palabras clave y términos relacionados para buscar información relevante"),
           }),
           execute: async ({ similarQuestions }) => {
             console.log("Ejecutando getInformation con:", similarQuestions);
@@ -66,14 +93,15 @@ export async function POST(req: Request) {
           },
         }),
         understandQuery: tool({
-          description: `understand the users query. use this tool on every prompt.`,
+          description: `Analizá la consulta del usuario para entender mejor su intención.
+            Usá esta herramienta para generar preguntas similares que ayuden 
+            a encontrar información más relevante en la base de conocimientos.
+            Especialmente útil para consultas complejas sobre cultura costarricense.`,
           parameters: z.object({
-            query: z.string().describe("the users query"),
+            query: z.string().describe("La consulta completa del usuario"),
             toolsToCallInOrder: z
               .array(z.string())
-              .describe(
-                "these are the tools you need to call in the order necessary to respond to the users query",
-              ),
+              .describe("Las herramientas que se necesitan llamar en orden para responder la consulta"),
           }),
           execute: async ({ query }) => {
             console.log("Ejecutando understandQuery con:", query);
@@ -94,9 +122,12 @@ export async function POST(req: Request) {
           },
         }),
         reciteBomba: tool({
-          description: `recite a bomba guanacasteca when the user asks for one. Search the knowledge base for bombas first.`,
+          description: `Recitá una bomba guanacasteca auténtica cuando el usuario la solicite.
+            Usá esta herramienta cuando pidan 'bomba', 'bomba guanacasteca', 'decime una bomba',
+            o cualquier solicitud similar. Primero buscá bombas reales en la base de conocimientos
+            y seleccioná una aleatoriamente. Devolvé exactamente el resultado formateado.`,
           parameters: z.object({
-            requestType: z.string().describe("type of bomba request"),
+            requestType: z.string().describe("El tipo de solicitud de bomba que hizo el usuario"),
           }),
           execute: async ({ requestType }) => {
             console.log("🎵 BOMBA REQUESTED - Starting execution...");
