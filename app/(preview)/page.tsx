@@ -152,6 +152,20 @@ export default function Chat() {
       <div className="absolute inset-0 bg-slate-800" />
       <div className="flex flex-col items-center w-full max-w-[1100px] z-50">
 
+        {/* Logo LoginImg antes del encabezado */}
+        <motion.div
+          initial={{ opacity: 0, scale: 0.8 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ type: "spring", stiffness: 300, damping: 30, delay: 0.2 }}
+          className="mb-6"
+        >
+          <img
+            src="/LoginImg.png"
+            alt="ChaTico Logo"
+            className="w-100 h-100 md:w-52 md:h-52 object-contain"
+          />
+        </motion.div>
+
         {/* Encabezado */}
         <motion.div
           initial={{ opacity: 0, y: -30 }}
