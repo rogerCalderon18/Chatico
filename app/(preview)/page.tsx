@@ -157,12 +157,11 @@ export default function Chat() {
           initial={{ opacity: 0, scale: 0.8 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ type: "spring", stiffness: 300, damping: 30, delay: 0.2 }}
-          className="mb-6"
         >
           <img
             src="/LoginImg.png"
             alt="ChaTico Logo"
-            className="w-100 h-100 md:w-52 md:h-52 object-contain"
+            className="w-80 h-80 md:w-40 md:h-40 object-contain"
           />
         </motion.div>
 
@@ -171,7 +170,7 @@ export default function Chat() {
           initial={{ opacity: 0, y: -30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ type: "spring", stiffness: 300, damping: 30 }}
-          className="mb-12 text-center"
+          className="mb-6 text-center"
         >        <h1 className="text-4xl md:text-5xl font-bold text-blue-800 drop-shadow-2xl">
             Bienvenid@ a ChaTico
           </h1>
